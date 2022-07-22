@@ -1,17 +1,18 @@
 /*
  * Autor: Summer Lo
- * Updated date: 05/07/2022
+ * Updated date: 14/07/2022
  * Description: Design for counting the traveling time between Dispatch Sensor (Physical) 
  * and Loading and Unloading Station Sensor (Physical)
  * GPIO Output read status LOW = 0
  * GPIO Output read status HIGH = 1
+ * Updates: Teacher version
  */
 #include "stopper.h"
 #include <neotimer.h>
 #include "sensor.h"
-int numBlinks=0;
 int count = 0;
 int state = 0;
+int stateInput = 0;
 unsigned long timer1;
 unsigned long timer2;
 unsigned long timeDiff;
@@ -21,7 +22,7 @@ stopper leftStopper(0);
 stopper rightStopper(1);
 stopper bottomConveyor(2);
 stopper dispatchCargo(3);
-stopper resetCargo(4);
+stopper verticalCargo(4);
 
 //GPIO SetUp (Sensor)
 sensor cargoDetector(0);
@@ -40,15 +41,13 @@ void setup() {
     Serial.begin(9600);
     t0.reset();
     t2.reset();
-    //t0.start();
-    //t2.start();
 
     // Original Position
     bottomConveyor.start();
     delay(200);
     dispatchCargo.start();
     delay(200);
-    resetCargo.start();
+    verticalCargo.start();
     delay(200);
 
     Serial.println("Start\n");
@@ -59,25 +58,36 @@ void setup() {
 void loop() {
     if (state == 0)
     {
-        Serial.println("Please input the number of message which you want to send to raspberry pi?"); //Prompt User for Input
-        numBlinks = Serial.parseInt();                                                                //Read the data the user has input
-        Serial.println("NumBlinks is:"+numBlinks);
+        // put your main code here, to run repeatedly:
+        Serial.println("Please input the number to set the state (1 or 2)!");
+        stateInput = Serial.parseInt(); //Read the data the user has input
+        Serial.println("State: "+ stateInput);
         while (Serial.available() == 0) {
             count++;
         }
-        switch (numBlinks) {
+      
+        switch (stateInput) {
             case 1:
-                state = 1;
+                state = 1;                          // State 1
                 Serial.println("Change to state 1!");
                 break;
             case 2:
-                state = 2;
+                state = 2;                          // State 2
                 Serial.println("Change to state 2!");
                 break;
          }  
     }
-    
-    // Begin: Write your code here
 
-    // End: Write your code here
+    else if (state == 1)                            // State 1
+    {
+        dispatchCargo.start();                      // Dispatch cargo
+        timer1 = millis();                          // Get the current time
+        state = 2;                                  // Set state = 2
+    }
+    else if (state == 2)                            // State 2
+    {
+        // Write your code - Begin      
+
+        // Write your code - End        
+    }
 }

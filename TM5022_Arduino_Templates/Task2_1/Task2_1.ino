@@ -1,21 +1,24 @@
 /*
  * Autor: Summer Lo
- * Updated date: 05/07/2022
+ * Updated date: 14/07/2022
  * Description: Design for counting the traveling time between Front sensor (Virtual) 
  * and Loading and Unloading Station Sensor (Virtual)
  * GPIO Output read status LOW = 0 
  * GPIO Output read status HIGH = 1
+ * Updates: Student version
  */
 #include "stopper.h"
 #include <neotimer.h>
 #include "sensor.h"
+int numBlinks=0;
+int count = 0;
 
 //GPIO SetUp (Stopper)
 stopper leftStopper(0);
 stopper rightStopper(1);
 stopper bottomConveyor(2);
 stopper dispatchCargo(3);
-stopper resetCargo(4);
+stopper verticalCargo(4);
 
 //GPIO SetUp (Sensor)
 sensor cargoDetector(0);
@@ -32,8 +35,6 @@ Neotimer t2 = Neotimer(5000);   // 5 second timer
 
 int state = 0;
 int deliver = 0;
-char message;
-char store;
 unsigned long timer1;
 unsigned long timer2;
 unsigned long timeDiff;
@@ -42,15 +43,13 @@ void setup() {
     Serial.begin(9600);
     t0.reset();
     t2.reset();
-    //t0.start();
-    t2.start();
 
     // Original Position
     bottomConveyor.start();
     delay(200);
     dispatchCargo.start();
     delay(200);
-    resetCargo.start();
+    verticalCargo.start();
     delay(200);
 
     Serial.println("Start\n");
@@ -59,34 +58,21 @@ void setup() {
 
 
 void loop() {
+    // put your main code here, to run repeatedly:
     
-    if (state == 0)                                         
+    if (state == 0)                                     // State 0
     {
-        if(t2.done())
-        {   
-            // Begin: Write your code here
-
-            // End: Write your code here
-            {
-                timer1 = millis();
-                //Serial.println(timer1);
-                state = 1;
-                //Serial.println("Change to State 1!");
-            }  
-        }
-    }
-    else if (state == 1)
-    {
-        // Begin: Write your code here
-
-        // End: Write your code here
+        if (locationSensor.read() == 1)                 // Check the location sensor
         {
-            // Begin: Write your code here
+            timer1 = millis();                          // Get the current time
+            state = 1;                                  // Set state = 1
+            Serial.println("Change to State 1!");
+        }  
+    }
+    else if (state == 1)                                // State 1
+    {
+        // Write your code - Begin
 
-            // End: Write your code here
-            state = 0;
-            //Serial.println("Change to State 0");
-            t2.start();
-        }
+        // Write your code - End
     }
 }

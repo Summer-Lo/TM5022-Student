@@ -5,7 +5,7 @@ sensor::sensor(int pin)
 {
     if(pin == 0){     //Sensor for Loading and Unloading station (virtual)
       //_pin = 4;
-      _pin = LOADING_UNLOADING_SENSOR_PIN;  
+      _pin = CARGO_DETECTOR_PIN;  
     }
     else if(pin == 1){     //End button
       //_pin = 3;
@@ -13,18 +13,18 @@ sensor::sensor(int pin)
     }
     else if(pin == 2){     //Sensor for front of the Loading and Unloading station
       //_pin = 5; 
-      _pin = FRONT_SENSOR_PIN;  
+      _pin = LOCATION_SENSOR_PIN;  
     }
     else if(pin == 3){     //Sensor for Dispatching process in physical Loading and Unloading Station
       //_pin = 2;
-      _pin = DISPATCH_SENSOR_PIN;
+      _pin = HOME_SENSOR_PIN;
     }
     else if(pin == 4){     //Sensor for RESET process in Physical Loading and Unloading station
       //_pin = A2;
       _pin = RESET_SENSOR_PIN;
     }
     else if(pin == 5){    //Sensor for V-REP (Virtural) Loading and Unloading Sensor
-      _pin = VREP_LOADING_UNLOADING_SENSOR_PIN;
+      _pin = PALLET_DETECTOR_PIN;
     }
     count = 0;
     previousResult = 0;
